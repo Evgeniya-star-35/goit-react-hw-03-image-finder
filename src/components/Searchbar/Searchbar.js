@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
+import propTypes from 'prop-types';
 // import { ImSearch } from 'react-icons/im';
 import s from './Searchbar.module.css';
 
@@ -7,6 +8,8 @@ export default class Searchbar extends Component {
   state = {
     searchQuery: '',
   };
+  static propTypes = { onSubmit: propTypes.func };
+
   handleSearchQueryChange = e => {
     this.setState({ searchQuery: e.target.value.toLowerCase() });
   };
@@ -27,15 +30,15 @@ export default class Searchbar extends Component {
           <input
             className={s.searchFormInput}
             type="text"
-            // autocomplete="off"
-            // autofocus
+            autoComplete="off"
+            autoFocus
             placeholder="Search images and photos"
             value={this.state.searchQuery}
             onChange={this.handleSearchQueryChange}
           />
           <button
             className={s.searchFormButton}
-            style={{ marginRight: 20, marginLeft: 5 }}
+            style={{ marginRight: 5 }}
             type="submit"
           >
             {/* <ImSearch style={{ marginRight: 8 }} /> */}

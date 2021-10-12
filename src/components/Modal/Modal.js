@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { createPortal } from 'react-dom';
 import s from './Modal.module.css';
-
+import PropTypes from 'prop-types';
 const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
+  state = {};
+
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -20,11 +22,6 @@ export default class Modal extends Component {
   };
 
   handleBackdropClick = e => {
-    // console.log('Кликнули в бекдроп');
-
-    // console.log('currentTarget: ', event.currentTarget);
-    // console.log('target: ', event.target);
-
     if (e.currentTarget === e.target) {
       this.props.onClose();
     }
@@ -32,10 +29,17 @@ export default class Modal extends Component {
 
   render() {
     return createPortal(
-      <div className={s.overlay} onClick={this.handleBackdropClick}>
-        <div className={s.modal}>{this.props.children}</div>
+      <div className={s.Overlay} onClick={this.handleBackdropClick}>
+        <div className={s.Modal}>{this.props.children}</div>
       </div>,
       modalRoot,
     );
   }
 }
+Modal.propTypes = {
+  // Все, что может быть отрендерено:
+  // числа, строки, элементы или массивы
+  // (или фрагменты) содержащие эти типы
+  children: PropTypes.node.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

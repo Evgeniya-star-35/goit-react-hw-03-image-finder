@@ -1,62 +1,106 @@
 import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+// import { toast } from 'react-toastify';
 import Container from '../Container';
 import Searchbar from '../Searchbar';
-import PicturesApi from '../../Services/PicturesApi';
+import MyLoader from '../Loader';
+import Button from '../Button';
+import { fetchPictures } from '../../Services/picturesApi';
+import scrollPageDown from '../../helpers/Scroll';
+import noHits from '../../helpers/errorFound';
 // import s from './App.module.css';
 import ImageGallery from '../ImageGallery';
 import Modal from '../Modal';
 
 class App extends Component {
   state = {
-    images: [],
+    page: 1,
     searchQuery: '',
-    showModal: false,
+    images: [],
+    error: '',
     loading: false,
+    showModal: false,
+    url: '',
+    tags: '',
   };
-
-  // async componentDidMount() {
-  //   try {
-  //     this.setState({ loading: true });
-  //     axios
-  //       .get(`&q=cat&page=1&per_page=12&key=${API_KEY}`)
-  //       .then(response => this.setState({ images: response.data.hits }))
-  //       .finally(this.setState({ loading: false }));
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    const { searchQuery } = this.state;
+    if (searchQuery !== prevState.searchQuery) {
+      this.fetchImages()
+        .catch(error => this.setState({ error }))
+        .finally(() => this.setState({ loading: false }));
+    }
+  }
+  componentDidCatch(error) {
+    this.setState({ error });
+  }
+  fetchImages = () => {
+    const { searchQuery, page } = this.state;
+    this.setState({ loading: true });
+    return fetchPictures(searchQuery, page).then(images => {
+      this.setState(prevState => ({
+        images: [...prevState.images, ...images],
+        page: prevState.page + 1,
+        error: '',
+      }));
+    });
+  };
+  handleOnLoadClick = () => {
+    this.fetchImages()
+      .then(() => {
+        scrollPageDown();
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ loading: false }));
+  };
+  handleClickImages = ({ target }) => {
+    if (target.nodeName !== 'IMG') {
+      return;
+    }
+    const { url } = target.dataset;
+    const { tag } = target.alt;
+    this.setState({
+      url,
+      tag,
+      loading: true,
+    });
+    this.toggleModal();
+  };
   toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
   };
   handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery });
+    this.setState({
+      page: 1,
+      searchQuery,
+      images: [],
+      error: '',
+    });
   };
+  hideLoaderInModal = () => this.setState({ loading: false });
+
   render() {
-    const { images, showModal, loading } = this.state;
+    const { images, loading, showModal, url, tag } = this.state;
     return (
       <Container>
         <ToastContainer autoClose={5000} />
         <Searchbar onSubmit={this.handleFormSubmit} />
-        <PicturesApi searchQuery={this.state.searchQuery} />
-        {loading && <h1>Load...</h1>}
-        {images.length > 0 && <ImageGallery images={images} />}
-        {/* { return images.length > 0 ?
-        <ArticleList images={images} /> : null; */}
-        {/* <button type="button" onClick={this.toggleModal}>
-          Open
-        </button>
+        {loading && <MyLoader />}
+        {images.length !== 0 && (
+          <ImageGallery images={images} onOpenModal={this.handleClickImages} />
+        )}
+        {loading && !showModal && <MyLoader />}
+        {!loading && images[0] && <Button onClick={this.handleOnLoadClick} />}
+
         {showModal && (
-          <Modal onClose={this.toggleModal}>
-            <button type="button" onClick={this.toggleModal}>
-              Close
-            </button>
+          <Modal onClose={this.toggleModal} onClick={this.handleClickImages}>
+            {loading && <MyLoader />}
+            <img src={url} alt={tag} onLoad={this.hideLoaderInModal} />
           </Modal>
-        )} */}
+        )}
       </Container>
     );
   }
