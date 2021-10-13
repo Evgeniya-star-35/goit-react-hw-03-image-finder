@@ -24,6 +24,7 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { searchQuery } = this.state;
     if (searchQuery !== prevState.searchQuery) {
+      this.setState({ loading: true });
       this.fetchImages()
         .catch(error => console.log(error))
         .finally(() => this.setState({ loading: false }));
@@ -32,7 +33,6 @@ class App extends Component {
 
   fetchImages = () => {
     const { searchQuery, page } = this.state;
-    this.setState({ loading: true });
     return fetchPictures(searchQuery, page).then(images => {
       this.setState(prevState => ({
         images: [...prevState.images, ...images],
@@ -41,6 +41,7 @@ class App extends Component {
     });
   };
   handleOnLoadClick = () => {
+    this.setState({ loading: true });
     this.fetchImages()
       .then(() => {
         scrollPageDown();
@@ -71,6 +72,7 @@ class App extends Component {
       page: 1,
       searchQuery,
       images: [],
+      // loading: false,
     });
   };
   hideLoaderInModal = () => this.setState({ loading: false });
@@ -80,9 +82,8 @@ class App extends Component {
     // console.log(images[0]);
     return (
       <Container>
-        <ToastContainer autoClose={5000} />
+        <ToastContainer autoClose={3000} />
         <Searchbar onSubmit={this.handleFormSubmit} />
-        {searchQuery !== '' && images.length < 1 && <NoFound />}
         {loading && <MyLoader />}
         {images.length !== 0 && (
           <ImageGallery images={images} onOpenModal={this.handleClickImages} />
@@ -95,6 +96,7 @@ class App extends Component {
             <img src={url} alt={tag} onLoad={this.hideLoaderInModal} />
           </Modal>
         )}
+        {searchQuery !== '' && images.length === 0 && <NoFound />}
       </Container>
     );
   }
