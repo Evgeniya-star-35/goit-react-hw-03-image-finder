@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
 import propTypes from 'prop-types';
-// import { ImSearch } from 'react-icons/im';
+import { ImSearch } from 'react-icons/im';
 import s from './Searchbar.module.css';
 
 export default class Searchbar extends Component {
@@ -38,11 +38,12 @@ export default class Searchbar extends Component {
           />
           <button
             className={s.searchFormButton}
-            style={{ marginRight: 5 }}
+            // style={{ marginRight: 5 }}
             type="submit"
           >
-            {/* <ImSearch style={{ marginRight: 8 }} /> */}
-            {/* Find */}
+            <ImSearch
+              style={{ marginRight: 4, marginLeft: 4, width: 20, height: 20 }}
+            />
           </button>
         </form>
       </header>
