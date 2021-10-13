@@ -8,7 +8,7 @@ export default class Searchbar extends Component {
   state = {
     searchQuery: '',
   };
-  static propTypes = { onSubmit: propTypes.func };
+  static propTypes = { onSubmit: propTypes.func.isRequired };
 
   handleSearchQueryChange = e => {
     this.setState({ searchQuery: e.target.value.toLowerCase() });
