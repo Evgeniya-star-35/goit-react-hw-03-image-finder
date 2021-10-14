@@ -1,19 +1,20 @@
 import PropTypes from 'prop-types';
 import s from './ImageGalleryItem.module.css';
-const ImageGalleryItem = ({ webformatURL, tags, largeImageURL }) => (
+const ImageGalleryItem = ({ image, openModal }) => (
   <>
     <img
-      src={webformatURL}
-      alt={tags}
-      data-url={largeImageURL}
+      onClick={() => {
+        openModal(image);
+      }}
+      src={image.webformatURL}
+      alt={image.tags}
       className={s.galleryItemImage}
     />
   </>
 );
 
 ImageGalleryItem.propTypes = {
-  webformatURL: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
-  largeImageURL: PropTypes.string.isRequired,
+  image: PropTypes.object,
+  openModal: PropTypes.func,
 };
 export default ImageGalleryItem;

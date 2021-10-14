@@ -18,8 +18,7 @@ class App extends Component {
     images: [],
     loading: false,
     showModal: false,
-    url: '',
-    tag: '',
+    largeImage: {},
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -51,17 +50,12 @@ class App extends Component {
       .catch(error => console.log(error))
       .finally(() => this.setState({ loading: false }));
   };
-  handleClickImages = ({ target }) => {
-    if (target.nodeName !== 'IMG') {
-      return;
-    }
-    const { url } = target.dataset;
-    const tag = target.alt;
-    this.setState({
-      url,
-      tag,
-      loading: true,
-    });
+  handleClickImages = largeImage => {
+    // if (e.target.nodeName !== 'IMG') {
+    //   return;
+    // }
+
+    this.setState({ largeImage });
     this.toggleModal();
   };
   toggleModal = () => {
@@ -80,7 +74,7 @@ class App extends Component {
   hideLoaderInModal = () => this.setState({ loading: false });
 
   render() {
-    const { images, loading, showModal, url, tag, searchQuery } = this.state;
+    const { images, loading, showModal, largeImage, searchQuery } = this.state;
     // console.log(images[0]);
     return (
       <Container>
@@ -97,7 +91,11 @@ class App extends Component {
         {showModal && (
           <Modal onClose={this.toggleModal} onClick={this.handleClickImages}>
             {loading && <MyLoader />}
-            <img src={url} alt={tag} onLoad={this.hideLoaderInModal} />
+            <img
+              src={largeImage.largeImageURL}
+              alt={largeImage.tags}
+              onLoad={this.hideLoaderInModal}
+            />
           </Modal>
         )}
         {/* {searchQuery !== '' && images.length === 0 && <NoFound />} */}

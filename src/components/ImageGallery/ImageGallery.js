@@ -5,14 +5,10 @@ import s from './ImageGallery.module.css';
 export default function ImageGallery({ images, onOpenModal }) {
   // console.log(images);
   return (
-    <ul className={s.imageGallery} onClick={onOpenModal}>
-      {images.map(({ id, webformatURL, tags, largeImageURL }) => (
-        <li className={s.imageGalleryItem} key={id}>
-          <ImageGalleryItem
-            webformatURL={webformatURL}
-            tags={tags}
-            largeImageURL={largeImageURL}
-          />
+    <ul className={s.imageGallery}>
+      {images.map(image => (
+        <li className={s.imageGalleryItem} key={image.id}>
+          <ImageGalleryItem openModal={onOpenModal} image={image} />
         </li>
       ))}
     </ul>
