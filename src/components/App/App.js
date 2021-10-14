@@ -87,8 +87,10 @@ class App extends Component {
         <ToastContainer autoClose={3000} />
         <Searchbar onSubmit={this.handleFormSubmit} />
         {loading && <MyLoader />}
-        {images.length !== 0 && (
+        {images.length !== 0 ? (
           <ImageGallery images={images} onOpenModal={this.handleClickImages} />
+        ) : (
+          searchQuery !== '' && <NoFound />
         )}
         {loading && !showModal && <MyLoader />}
         {!loading && images[0] && <Button onClick={this.handleOnLoadClick} />}
@@ -98,7 +100,7 @@ class App extends Component {
             <img src={url} alt={tag} onLoad={this.hideLoaderInModal} />
           </Modal>
         )}
-        {searchQuery !== '' && images.length === 0 && <NoFound />}
+        {/* {searchQuery !== '' && images.length === 0 && <NoFound />} */}
       </Container>
     );
   }
