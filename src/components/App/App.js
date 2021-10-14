@@ -21,10 +21,11 @@ class App extends Component {
     url: '',
     tag: '',
   };
+
   componentDidUpdate(prevProps, prevState) {
     const { searchQuery } = this.state;
     if (searchQuery !== prevState.searchQuery) {
-      this.setState({ loading: true });
+      // this.setState({ loading: true, page: 1 });
       this.fetchImages()
         .catch(error => console.log(error))
         .finally(() => this.setState({ loading: false }));
@@ -33,6 +34,7 @@ class App extends Component {
 
   fetchImages = () => {
     const { searchQuery, page } = this.state;
+    this.setState({ loading: true });
     return fetchPictures(searchQuery, page).then(images => {
       this.setState(prevState => ({
         images: [...prevState.images, ...images],
