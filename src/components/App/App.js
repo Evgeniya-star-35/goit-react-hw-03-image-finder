@@ -51,10 +51,6 @@ class App extends Component {
       .finally(() => this.setState({ loading: false }));
   };
   handleClickImages = largeImage => {
-    // if (e.target.nodeName !== 'IMG') {
-    //   return;
-    // }
-
     this.setState({ largeImage });
     this.toggleModal();
   };
@@ -68,17 +64,15 @@ class App extends Component {
       page: 1,
       searchQuery,
       images: [],
-      // loading: false,
     });
   };
   hideLoaderInModal = () => this.setState({ loading: false });
 
   render() {
     const { images, loading, showModal, largeImage, searchQuery } = this.state;
-    // console.log(images[0]);
     return (
       <Container>
-        <ToastContainer autoClose={3000} />
+        <ToastContainer autoClose={4000} />
         <Searchbar onSubmit={this.handleFormSubmit} />
         {loading && <MyLoader />}
         {images.length !== 0 ? (
@@ -89,7 +83,7 @@ class App extends Component {
         {loading && !showModal && <MyLoader />}
         {!loading && images[0] && <Button onClick={this.handleOnLoadClick} />}
         {showModal && (
-          <Modal onClose={this.toggleModal} onClick={this.handleClickImages}>
+          <Modal onClose={this.toggleModal}>
             {loading && <MyLoader />}
             <img
               src={largeImage.largeImageURL}
@@ -98,7 +92,6 @@ class App extends Component {
             />
           </Modal>
         )}
-        {/* {searchQuery !== '' && images.length === 0 && <NoFound />} */}
       </Container>
     );
   }
